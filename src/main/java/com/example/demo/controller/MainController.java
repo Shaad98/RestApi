@@ -1,8 +1,10 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +33,7 @@ public class MainController {
     private StudentService studentService;
 
     @GetMapping("/students/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable("id") int id)
+    public ResponseEntity<Student> getStudentById(@PathVariable("id") ObjectId id)
     {
         // return student.isPresent() ? 
         //         ResponseEntity.ok(student.get()) : ResponseEntity.notFound().build();
@@ -59,17 +61,19 @@ public class MainController {
 
     @PutMapping("students/{id}")
     public ResponseEntity<Student> updateStudent(
-                                @PathVariable int id,@RequestBody Student student) {
+                                @PathVariable ObjectId id,@RequestBody Student student) {
         Optional<Student> student2 = studentService.updateStudentById(id, student);
         return student2.isPresent() ?
                 ResponseEntity.ok(student2.get()):
                 ResponseEntity.notFound().build();
     }
     
+    // Single entity come with formatted string not as json obj so
     @PatchMapping("/students/{id}/name")
     public ResponseEntity<Student> updateStudentNameById(
-                                @PathVariable int id,@RequestBody String name)
+                                @PathVariable ObjectId id,@RequestBody Map<String, String> request)
     {
+        String name = request.get("name");
         Optional<Student> student = studentService.updateNameById(id, name);
         return student.isPresent() ?
                 ResponseEntity.ok(student.get()):
@@ -78,16 +82,18 @@ public class MainController {
 
      @PatchMapping("/students/{id}/city")
     public ResponseEntity<Student> updateStudentCityById(
-                                @PathVariable int id,@RequestBody String city)
+                                @PathVariable ObjectId id,@RequestBody Map<String, String> request)
     {
+        String city = request.get("city");
         Optional<Student> student = studentService.updateCityById(id, city);
         return student.isPresent() ?
                 ResponseEntity.ok(student.get()):
                 ResponseEntity.notFound().build(); 
     }
 
+    
     @RequestMapping(value = "/students/{id}", method=RequestMethod.HEAD)
-    public ResponseEntity<Void> isStudentExist(@PathVariable int id) {
+    public ResponseEntity<Void> isStudentExist(@PathVariable ObjectId id) {
         boolean isStudentExist = studentService.isStudentExist(id);
         return isStudentExist ? 
                                 ResponseEntity.ok().build() :
@@ -95,12 +101,17 @@ public class MainController {
     }
 
     @DeleteMapping("/students/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable int id)
+    public ResponseEntity<Void> deleteStudent(@PathVariable ObjectId id)
     {
         boolean isStudentExist = studentService.deleteStudentById(id);
         return isStudentExist ? 
                                 ResponseEntity.noContent().build() :
                                 ResponseEntity.notFound().build();
+    }
+
+    @RequestMapping(value = "/students", method=RequestMethod.OPTIONS)
+    public ResponseEntity<List<String>> isStudentExist() {
+        return ResponseEntity.ok(studentService.getSupportMethods());
     }
     
 }

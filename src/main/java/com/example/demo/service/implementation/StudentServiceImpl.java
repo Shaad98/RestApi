@@ -3,8 +3,10 @@ package com.example.demo.service.implementation;
 import java.util.List;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+// import org.springframework.util.ObjectUtils;
 
 import com.example.demo.entity.Student;
 import com.example.demo.repository.StudentRepository;
@@ -26,7 +28,7 @@ public class StudentServiceImpl implements StudentService{
 
     // updateStudent 
     @Override
-    public Optional<Student> updateStudentById(int id,Student student) {
+    public Optional<Student> updateStudentById(ObjectId id,Student student) {
         Student student2 = studentRepository.findById(id).orElse(null);
         // if(student2==null) return Optional.ofNullable(student2);
         if(student2==null) return Optional.empty();
@@ -43,7 +45,7 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public Optional<Student> updateNameById(int id, String name) {
+    public Optional<Student> updateNameById(ObjectId id, String name) {
        Student student = studentRepository.findById(id).orElse(null);
     //    if(student==null) return Optional.ofNullable(student);
         if(student==null) return Optional.empty();
@@ -54,7 +56,7 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public Optional<Student> updateCityById(int id, String city) {
+    public Optional<Student> updateCityById(ObjectId id, String city) {
        Student student = studentRepository.findById(id).orElse(null);
     //    if(student==null) return Optional.ofNullable(student);
         if(student==null) return Optional.empty();
@@ -65,7 +67,7 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public Boolean deleteStudentById(int id) {
+    public Boolean deleteStudentById(ObjectId id) {
         Student student = studentRepository.findById(id).orElse(null);
         if(student==null) return false;
         studentRepository.delete(student);
@@ -73,7 +75,7 @@ public class StudentServiceImpl implements StudentService{
     }
 
     @Override
-    public Optional<Student> getStudentById(int id) {
+    public Optional<Student> getStudentById(ObjectId id) {
         Student student = studentRepository.findById(id).orElse(null);
         // if(student==null) return Optional.ofNullable(student);
         return Optional.ofNullable(student);
@@ -88,7 +90,7 @@ public class StudentServiceImpl implements StudentService{
 
     // existsById 
     @Override
-    public Boolean isStudentExist(int id) {
+    public Boolean isStudentExist(ObjectId id) {
         // Student student = studentRepository.findById(id).orElse(null);
         // return student == null ? false : true;
         return studentRepository.existsById(id);
